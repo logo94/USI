@@ -273,5 +273,3 @@ def update_marc():
                                         out_file.write(my_record.as_marc())
     
     return 'Done'
-
-print(update_marc())
