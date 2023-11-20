@@ -137,11 +137,11 @@ def update_marc():
                                             "karten", "blatt", "blätter", "mappe"]:
                                     lang = ger
                                 elif c_300 in ["volumes", "tome", "tomes", "fascicule", "fascicules", "non paginé", "cartes", "feuille", "feuilles", "disque", "disques"
-                                            "disquette", "disquettes"]:
+                                            "disquette", "disquettes", "pages"]:
                                     lang = fr
                                 elif c_300 in ["issue", "issues", "map", "maps"]:
                                     lang = en
-                                elif c_300 in ["pages", "axi", "axv", "vol.", " p."]:   # ambiguous terms
+                                elif c_300 in ["axi", "axv", "vol.", " p."]:   # ambiguous terms
                                     if my_record.get_fields('040') is not None:
                                         for my_040 in my_record.get_fields('040'):
                                             if (my_040.get_subfields('b') is not None and len(my_040.get_subfields('b')) > 0):  # if 040 $b is not empty
