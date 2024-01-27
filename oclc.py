@@ -378,7 +378,7 @@ def update_marc():
     return {
         "Process_date": report_date(),
         "Total_files": tot_file_num,
-        "Total_records": record_num,
+        "Total_records": record_num - 1,
         "Updated_records": updated_record_num,
         "Errors": error_num,
         "Result_lang": lang_num,
