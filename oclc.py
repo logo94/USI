@@ -95,8 +95,10 @@ def lang_check(forced_lang, lang, text):
 def update_marc():
 
     # File di output / output file
-    outfile = '[CollectionID].[OCLCSymbol].'+ str(process_date()) + '.updates.mrc'
-    input_folder = filedialog.askdirectory()    # If used on client PC, open a filedialog
+    outfile = '[CollectionID].[OCLCSymbol].'+ str(process_date()) + '.updates.mrc'#                 <-- CHANGE THIS LINE
+    
+    input_folder = filedialog.askdirectory()    # If used on client PC, open a filedialog (GUI)     <-- CHANGE THIS LINE
+    #input_folder = input('directory-path:') # for server environment (CLI)                         <-- CHANGE THIS LINE
 
     # INIZIALIZZAZIONE VARIABILI
     it = "ita"
