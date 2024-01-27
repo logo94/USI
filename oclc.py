@@ -106,10 +106,30 @@ def update_marc():
     fr = "fre"
     en = "eng"
     forced_lang = ""
+
+    ### Lista termini per riconoscimento lingua / Manual language check
+
+    # 264 $a
+    arr_264a_it = ["[luogo di pubblicazione non identificato]", "[luogo di edizione non identificato]", "[luogo di stampa non identificato]"]
+    arr_264a_de = ["[verlagsort nicht ermittelbar]", "[erscheinungsort nicht ermittelbar]"]
+    arr_264a_fr = ["[lieu de publication non identifié]"]
+
+    # 264 $b
+    arr_264b_it = ["editore non identificato"]
+    arr_264b_de = ["verlag nicht ermittelbar", "verlagsname nicht ermittelbar"]
+    arr_264b_fr = ["éditeur non identifié"]
+
+    # 300
+    arr_300_it = ["pagine", "carta", "carte", "volume", "volumi", "tomo", "tomi", "fascicolo", "fascicoli", "senza", "paginazione", "numerat", "foglio", "fogli", "cartina", "cartine", "disco", "dischi", "cd", "cd-rom", "dvd", "dvd-rom", "blu-ray", "vhs", "illustrazioni", "tavole", "disegni", "fotografie", "busta", "buste", "cofanetto", "cofanetti", "mappetta", "mappette", "pieghevole", "pieghevoli", "facsim.", "colori", "bianco/nero"]
+    arr_300_de = ["bd.", "seiten", "s.", "band", "bände", "bde", "volumen", "heft", "hefte", "nicht", "paginiert", "ohne", "seitenzählung", "karte", "karten", "blatt", "blätter", "mappe", "illustrationen", "tafeln", "taf.", "abbildungen", "abb.", "fotografien", "faltblatt", "ordner", "schuber", "fak-sim."]
+    arr_300_fr = ["volumes", "tome", "tomes", "fascicule", "fascicules", "paginé", "cartes", "feuille", "feuilles", "disque", "disques", "disquette", "disquettes", "pages", "illustrations", "tables", "dessins", "photographies", "sans", "pagination", "noir", "fac-sim.", "couleur", "couleurs"]
+    arr_300_en = ["issue", "issues", "map", "maps", "drawings", "photographs", "pagination multiple"]
+
+    # 310 $a / 321 $a
     period_arr_it = ['annuale', 'biennale', 'bimensile', 'bisettimanale', 'mese', 'irregolare', 'mensile', 'settimane', 'quotidiano', 'semestrale', 'settimanale', 'anno', 'settimana', 'triennale', 'trimestrale']
     period_arr_de = ['jahre', 'monate', 'wochen', 'jahr', 'monat', 'woche', 'halbjährlich', 'jährlich', 'monatlich', 'täglich', 'unregelmäßig', 'vierteljährlich', 'wöchentlich']
     period_arr_fr = ['annuel', 'biennal', 'bihebdomadaire', 'bimensuel', 'hebdomadaire', 'irrégulier', 'mensuel', 'quotidien', 'semestriel', 'semaine', 'semaines', 'triennal', 'trimestriel', 'mois']
-
+    
     # Contatori report / Report counters
     tot_file_num = 0    # File totali / Total files
     record_num = 0  # Numero record / Records number
@@ -163,33 +183,28 @@ def update_marc():
                                 # If text contains an ambiguous term, language set in 040 $b is used as cataloguing language
                                 # if 300 text does not contains any of the hardcoded terms, automatic language detection is used (2 on 3)
                                 if not lang:
+                                    
                                     if record.get_fields('300') is not None:
                                         for f_300 in record.get_fields('300'):
                                             c_300_line = f_300.value().lower()
                                             c_300_array = c_300_line.split(' ')
                                             for c_300 in c_300_array:
-                                                if c_300 in ["pagine", "carta", "carte", "volume", "volumi", "tomo", "tomi", "fascicolo", "fascicoli", "senza", "paginazione", "numerat", "foglio",
-                                                            "fogli", "cartina", "cartine", "disco", "dischi", "cd", "cd-rom", "dvd", "dvd-rom", "blu-ray", "vhs", "illustrazioni", "tavole", "disegni", "fotografie",
-                                                            "busta", "buste", "cofanetto", "cofanetti", "mappetta", "mappette", "pieghevole", "pieghevoli", "facsim.", "colori", "bianco/nero"]:
+                                                if c_300 in arr_300_it:
                                                     lang = it
                                                     break
-                                                elif c_300 in ["bd.", "seiten", "s.", "band", "bände", "bde", "volumen", "heft", "hefte", "nicht", "paginiert", "ohne", "seitenzählung", "karte", 
-                                                            "karten", "blatt", "blätter", "mappe", "illustrationen", "tafeln", "taf.", "abbildungen", "abb.", "fotografien", "faltblatt", "ordner", 
-                                                            "schuber", "fak-sim."]:
+                                                elif c_300 in arr_300_de:
                                                     lang = ger
                                                     break
-                                                elif c_300 in ["volumes", "tome", "tomes", "fascicule", "fascicules", "paginé", "cartes", "feuille", "feuilles", "disque", "disques"
-                                                            "disquette", "disquettes", "pages", "illustrations", "tables", "dessins", "photographies", "sans", "pagination", "noir", 
-                                                            "fac-sim.", "couleur", "couleurs"]:
+                                                elif c_300 in arr_300_fr:
                                                     lang = fr
                                                     break
-                                                elif c_300 in ["issue", "issues", "map", "maps", "drawings", "photographs", "pagination multiple"]:
+                                                elif c_300 in arr_300_en:
                                                     lang = en
                                                     break
                                                 else: lang = False
                                             
                                                 
-                                    elif record.get_fields('300') is None and record.get_fields('310') is not None: # if 300 is empty and 310 is not empty
+                                    if (not lang and record.get_fields('310') is not None): # if 300 is empty and 310 is not empty
                                         for f_310 in record.get_fields('310'):
                                             if (f_310.get_subfields('a') is not None and len(f_310.get_subfields('a')) > 0):
                                                 val_310 = f_310.get_subfields('a')[0].lower()   # 310 text extraction
@@ -203,7 +218,7 @@ def update_marc():
                                                     lang = False
 
 
-                                    elif (record.get_fields('300') is None and record.get_fields('310') is None and record.get_fields('321') is not None):  # if 300 and 310 are empty and 321 is not empty
+                                    if (not lang and record.get_fields('321') is not None):  # if 300 and 310 are empty and 321 is not empty
                                         for f_321 in record.get_fields('321'):
                                             if (f_321.get_subfields('a') is not None and len(f_321.get_subfields('a')) > 0):
                                                 val_321 = f_321.get_subfields('a')[0].lower()   # 321 text extraction
@@ -215,29 +230,27 @@ def update_marc():
                                                     lang = fr
                                                 else: lang = False
 
-                                if not lang:
-                                    if record.get_fields('264') is not None:
+                                    if (not lang and record.get_fields('264') is not None):
                                         for f_264 in record.get_fields('264'):
                                             if (f_264.get_subfields('a') is not None and len(f_264.get_subfields('a')) > 0):
                                                 val_264 = f_264.get_subfields('a')[0].lower()
-                                                if val_264 in ["[luogo di pubblicazione non identificato]", "[luogo di edizione non identificato]", "[luogo di stampa non identificato]"]:
+                                                if val_264 in arr_264a_it:
                                                     lang = it
-                                                elif val_264 in ["[verlagsort nicht ermittelbar]", "[erscheinungsort nicht ermittelbar]"]:
+                                                elif val_264 in arr_264a_de:
                                                     lang = ger
-                                                elif val_264 in ["[lieu de publication non identifié]"]:
+                                                elif val_264 in arr_264a_fr:
                                                     lang = fr
                                                 else: lang = False
 
-                                if not lang:
-                                    if record.get_fields('264') is not None:  
+                                    if (not lang and record.get_fields('264') is not None):
                                         for f_264 in record.get_fields('264'):  
                                             if (f_264.get_subfields('b') is not None and len(f_264.get_subfields('b')) > 0):
                                                 val_264_b = f_264.get_subfields('b')[0].lower()
-                                                if val_264_b in ["editore non identificato"]:
+                                                if val_264_b in arr_264b_it:
                                                     lang = it
-                                                elif val_264_b in ["verlag nicht ermittelbar", "verlagsname nicht ermittelbar"]:
+                                                elif val_264_b in arr_264b_de:
                                                     lang = ger
-                                                elif val_264_b in ["éditeur non identifié"]:
+                                                elif val_264_b in arr_264b_fr:
                                                     lang = fr
                                                 else: lang = False
                                         
