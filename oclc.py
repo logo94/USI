@@ -311,7 +311,7 @@ def update_marc():
                                                 except:
                                                     error_check = True
                                                     err_file.write(file + '\t' + str(record_num) + '\t' + '5XX $a Update Error' + '\t' + str(mms_id) + '\n')
-                                                    continue
+                                                    pass
                                             
                                             if (my_note.get_subfields('t') is not None and len(my_note.get_subfields('t')) > 0):
                                                 try:
@@ -334,7 +334,7 @@ def update_marc():
                                                 except:
                                                     error_check = True
                                                     err_file.write(file + '\t' + str(record_num) + '\t' + '5XX $t Update Error' + '\t' + str(mms_id) + '\n')
-                                                    continue
+                                                    pass
                                             
                                             if (my_note.get_subfields('c') is not None and len(my_note.get_subfields('c')) > 0):
                                                 try:
@@ -355,7 +355,7 @@ def update_marc():
                                                 except:
                                                     error_check = True
                                                     err_file.write(file + '\t' + str(record_num) + '\t' + '5XX $c Update Error' + '\t' + str(mms_id) + '\n')
-                                                    continue
+                                                    pass
                                 
                                 # Rimozione sottocampo $2 6XX / Removing subfield $2 from 6XX
                                 if record.get_fields('600', '610', '611', '630','648', '650', '651', '655', '690', '691') is not None:
