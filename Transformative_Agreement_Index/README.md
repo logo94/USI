@@ -4,7 +4,7 @@
 
 The repository includes two files:
 
-- merge of [Transformative Agreements](https://esac-initiative.org/about/transformative-agreements/) Index published at the [link](https://docs.google.com/spreadsheets/d/e/2PACX-1vStezELi7qnKcyE8OiO2OYx2kqQDOnNsDX1JfAsK487n2uB_Dve5iDTwhUFfJ7eFPDhEjkfhXhqVTGw/pub?gid=1130349201&single=true&output=csv) in JSON format
+- merge of [Transformative Agreements](https://esac-initiative.org/about/transformative-agreements/) Index in JSON format, published at this [link](https://docs.google.com/spreadsheets/d/e/2PACX-1vStezELi7qnKcyE8OiO2OYx2kqQDOnNsDX1JfAsK487n2uB_Dve5iDTwhUFfJ7eFPDhEjkfhXhqVTGw/pub?gid=1130349201&single=true&output=csv) 
 - List of all Journals in the index, expressed as python array for quick import
 
 ## JSON schema
